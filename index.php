@@ -16,6 +16,7 @@ $result = $conn->query($sql);
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="footer.css">   
 </head>
 <body>
     <!-- Navigation -->
@@ -62,29 +63,17 @@ $result = $conn->query($sql);
                     <img src="images/anhnen.jpg" class="d-block w-100" alt="Ảnh nền">
                     <!-- Optional: Add a very basic caption if needed, or leave empty -->
                     <div class="carousel-caption d-none d-md-block">
-                         <h5>Welcome to CGV Cinemas</h5>
+                         <h2>WELCOME TO CGV CINEMAS</h2>
                          <p>Book your tickets now!</p>
                      </div>
                 </div>
-                <!-- Add more basic carousel items here if needed for a simple top slider -->
             </div>
-            <!-- Optional: Add basic controls or indicators if you want a simple slider at the top -->
-            <!--
-            <button class="carousel-control-prev" type="button" data-bs-target="#heroCarouselTop" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#heroCarouselTop" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
-            -->
         </div>
     </div>
 
     <!-- Now Showing Movies - Transformed to Carousel -->
-    <div class="now-showing-full-width my-5">
-        <h2 class="text-center mb-4">Phim Đang Chiếu</h2>
+    <div class="now-showing-full-width">
+        <h2 class="title">PHIM ĐANG CHIẾU</h2>
         <div id="nowShowingCarousel" class="carousel slide" data-bs-ride="carousel">
              <div class="carousel-indicators">
                 <?php
@@ -133,33 +122,49 @@ $result = $conn->query($sql);
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-dark text-light py-4">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <h5>CGV Cinemas</h5>
-                    <p>Hệ thống rạp chiếu phim hiện đại nhất Việt Nam</p>
-                </div>
-                <div class="col-md-4">
-                    <h5>Liên kết</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#" class="text-light">Về chúng tôi</a></li>
-                        <li><a href="#" class="text-light">Điều khoản sử dụng</a></li>
-                        <li><a href="#" class="text-light">Chính sách bảo mật</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-4">
-                    <h5>Liên hệ</h5>
-                    <p>Email: contact@cgv.vn</p>
-                    <p>Hotline: 1900 6017</p>
-                </div>
-            </div>
-        </div>
-    </footer>
-
+    <!-- Footer --> 
+    <?php include 'footer.php'?>
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+  const imgAll = document.querySelectorAll(".carousel-list .caurousel-item");
+  const list = document.querySelector(".carousel-list");
+  const iconLeft = document.querySelector(".arrow-icon-left");
+  const iconRight = document.querySelector(".arrow-icon-right");
+  const imgLength = imgAll.length;
+  let currentIdx = 0;
+
+  function updateTransform() {
+    const width = imgAll[0].offsetWidth;
+    list.style.transform = `translateX(${-width * currentIdx}px)`;
+    list.style.transition = '0.5s ease';
+  }
+
+  function slideShow() {
+    currentIdx = (currentIdx + 1) % imgLength;
+    updateTransform();
+  }
+
+  let interval = setInterval(slideShow,3000);
+
+  iconLeft.addEventListener("click", () => {
+    clearInterval(interval);
+    currentIdx = (currentIdx === 0) ? imgLength - 1 : currentIdx - 1;
+    updateTransform();
+    interval = setInterval(slideShow, 3000);
+  });
+
+  iconRight.addEventListener("click", () => {
+    clearInterval(interval);
+    currentIdx = (currentIdx === imgLength - 1) ? 0 : currentIdx + 1;
+    updateTransform();
+    interval = setInterval(slideShow, 3000);
+  });
+
+  // Resize support
+  window.addEventListener('resize', updateTransform);
+</script>
+   
 </body>
 </html>
 

@@ -210,7 +210,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['confirm_booking'])) {
     <?php endif; ?>
 
     <div class="mt-4">
-        <a href="book_movie.php?id=<?php echo isset($showtime['movie_id']) ? $showtime['movie_id'] : ''; ?>" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Quay lại chọn ghế</a>
+        <a href="select_seats.php?showtime_id=<?php echo isset($_GET['showtime_id']) ? $_GET['showtime_id']: ''; ?>" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Quay lại chọn ghế</a>
     </div>
 
 </div>

@@ -11,7 +11,7 @@ $user_id = $_SESSION['user_id'];
 $movie_id = $_POST['movie_id'];
 $showtime_id = $_POST['showtime_id'];
 $selected_seats = explode(',', $_POST['selected_seats']);
-$total_price = count($selected_seats) * 85000; // 85,000 VNĐ per seat
+$total_price = count($selected_seats) * 85000; 
 
 try {
     // Start transaction
