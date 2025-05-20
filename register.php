@@ -156,30 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </div>
 
     <!-- Footer -->
-    <footer class="bg-dark text-light py-4">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <h5>CGV Cinemas</h5>
-                    <p>Hệ thống rạp chiếu phim hiện đại nhất Việt Nam</p>
-                </div>
-                <div class="col-md-4">
-                    <h5>Liên kết</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#" class="text-light">Về chúng tôi</a></li>
-                        <li><a href="#" class="text-light">Điều khoản sử dụng</a></li>
-                        <li><a href="#" class="text-light">Chính sách bảo mật</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-4">
-                    <h5>Liên hệ</h5>
-                    <p>Email: contact@cgv.vn</p>
-                    <p>Hotline: 1900 6017</p>
-                </div>
-            </div>
-        </div>
-    </footer>
-
+    <?php include 'footer.php'?>
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

@@ -11,10 +11,12 @@ $booking_id = $_GET['booking_id'];
 $user_id = $_SESSION['user_id'];
 
 // Get booking details
-$sql = "SELECT b.*, m.title as movie_title, s.show_date, s.show_time 
-        FROM bookings b 
-        JOIN movies m ON b.movie_id = m.id 
-        JOIN showtimes s ON b.showtime_id = s.id 
+$sql = "SELECT b.*, m.title as movie_title, s.showtime,u.full_name as user_name,r.name as room_name
+        FROM bookings b
+        JOIN showtimes s ON b.showtime_id = s.id
+        JOIN movies m ON s.movie_id = m.id
+        JOIN users u ON b.user_id = u.id
+        JOiN rooms r ON s.room_id = r.id
         WHERE b.id = ? AND b.user_id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("ii", $booking_id, $user_id);
@@ -49,6 +51,19 @@ while ($row = $seats_result->fetch_assoc()) {
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="footer.css">
+    <style>
+     .qr-code {
+         display: flex;
+         justify-content: center;
+         align-items: center;
+        }
+    h3{
+        text-align: center;
+        margin-top: 20px;
+    }
+    </style>
+
 </head>
 <body>
     <!-- Navigation -->
@@ -94,7 +109,7 @@ while ($row = $seats_result->fetch_assoc()) {
                 </div>
 
                 <!-- Booking Details -->
-                <div class="card mt-4">
+                <!-- <div class="card mt-4">
                     <div class="card-header">
                         <h5 class="mb-0">Chi tiết đặt vé</h5>
                     </div>
@@ -103,17 +118,67 @@ while ($row = $seats_result->fetch_assoc()) {
                             <div class="col-md-6">
                                 <p><strong>Mã đặt vé:</strong> #<?php echo str_pad($booking_id, 6, '0', STR_PAD_LEFT); ?></p>
                                 <p><strong>Phim:</strong> <?php echo $booking['movie_title']; ?></p>
-                                <p><strong>Suất chiếu:</strong> <?php echo date('d/m/Y', strtotime($booking['show_date'])); ?> - 
-                                                             <?php echo date('H:i', strtotime($booking['show_time'])); ?></p>
+                                <p><strong>Suất chiếu:</strong> <?php echo date('d/m/Y', strtotime($booking['showtime'])); ?> - 
+                                                             <?php echo date('H:i', strtotime($booking['showtime'])); ?></p>
                             </div>
                             <div class="col-md-6">
                                 <p><strong>Ghế:</strong> <?php echo implode(', ', $booked_seats); ?></p>
-                                <p><strong>Tổng tiền:</strong> <?php echo number_format($booking['total_price'], 0, ',', '.'); ?> VNĐ</p>
+                                <p><strong>Tổng tiền:</strong> <?php echo number_format($booking['total_amount'], 0, ',', '.'); ?> VNĐ</p>
                                 <p><strong>Ngày đặt:</strong> <?php echo date('d/m/Y H:i', strtotime($booking['booking_date'])); ?></p>
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
+                <!-- QR Code -->
+   <div class="card mt-4">
+        <h3>🎟️ Mã QR của bạn:</h3>
+       <div class="container text-center mb-5 qr-code">
+        <?php
+         require_once './QR/phpqrcode/qrlib.php'; // Nhúng thư viện QR
+    
+        // Tạo mã vé (code) từ booking_id
+        $code = str_pad($booking_id, 6, '0', STR_PAD_LEFT);
+    
+        // Lấy tên phòng chiếu (nếu có trong truy vấn SQL, bạn cần JOIN với bảng rooms)
+        $room = isset($booking['room_name']) ? $booking['room_name'] : '';
+    
+        // Lấy tên người đặt
+        $name = isset($booking['user_name']) ? $booking['user_name'] : '';
+    
+       // Nội dung mã QR (dưới dạng JSON)
+        $qrContent = json_encode([
+        'Mã vé'    => $code,
+        'Tên phim' => $booking['movie_title'],
+        'Phòng'    => $room,
+        'Thời gian'=> date('d/m/Y H:i', strtotime($booking['showtime'])),
+        'Ghế'      => implode(', ', $booked_seats),
+        'Người đặt'=> $name
+       ], JSON_UNESCAPED_UNICODE); // Dùng để hiện tiếng Việt
+    
+        // Tạo thư mục nếu chưa có
+        $qrDir = './QR/qr_codes/';
+        if (!file_exists($qrDir)) {
+        mkdir($qrDir, 0777, true);
+       }
+    
+       // Tạo file ảnh QR
+       $qrFile = $qrDir . 'QR_' . $code . '.png';
+       QRcode::png($qrContent, $qrFile, QR_ECLEVEL_L, 5); // Kích thước = 5
+       ?>
+    
+       <!-- Hiển thị mã QR -->
+       <img src="<?php echo $qrFile; ?>" alt="Mã QR vé" class="img-fluid mt-3">
+       <!-- Hiển thị thông tin vé -->
+       <div class="mt-4 text-start d-inline-block text-left">
+        <p><strong>👤 Người đặt:</strong> <?= $name ?></p>
+        <p><strong>🎬 Tên phim:</strong> <?= $booking['movie_title'] ?></p>
+        <p><strong>🪑 Ghế:</strong> <?= implode(', ', $booked_seats) ?></p>
+        <p><strong>🕒 Thời gian:</strong> <?= date('d/m/Y H:i', strtotime($booking['showtime'])) ?></p>
+        <p><strong>🏢 Phòng chiếu:</strong> <?= $room ?></p>
+        <p><strong>🔖 Mã vé:</strong> <?= $code ?></p>
+        </div>
+      </div>
+   </div>
 
                 <!-- Instructions -->
                 <div class="card mt-4">
@@ -128,38 +193,16 @@ while ($row = $seats_result->fetch_assoc()) {
                         </ol>
                     </div>
                 </div>
-
+                 
                 <div class="text-center mt-4">
                     <a href="index.php" class="btn btn-primary">Về trang chủ</a>
                 </div>
             </div>
         </div>
     </div>
-
+   
     <!-- Footer -->
-    <footer class="bg-dark text-light py-4">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <h5>CGV Cinemas</h5>
-                    <p>Hệ thống rạp chiếu phim hiện đại nhất Việt Nam</p>
-                </div>
-                <div class="col-md-4">
-                    <h5>Liên kết</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#" class="text-light">Về chúng tôi</a></li>
-                        <li><a href="#" class="text-light">Điều khoản sử dụng</a></li>
-                        <li><a href="#" class="text-light">Chính sách bảo mật</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-4">
-                    <h5>Liên hệ</h5>
-                    <p>Email: contact@cgv.vn</p>
-                    <p>Hotline: 1900 6017</p>
-                </div>
-            </div>
-        </div>
-    </footer>
+    <?php include 'footer.php'?>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

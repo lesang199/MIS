@@ -137,7 +137,7 @@ if (!$booking) {
                                                     break;
                                             }
                                             ?>
-                                            <span class="badge bg-<?php echo $status_class; ?>">
+                                            <span class="<?php echo $status_class; ?>">
                                                 <?php echo ucfirst($booking['status']); ?>
                                             </span>
                                         </td>

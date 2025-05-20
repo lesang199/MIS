@@ -18,11 +18,11 @@ $booking_id = $_GET['booking_id'];
 $user_id = $_SESSION['user_id'];
 
 // Lấy thông tin đặt vé
-$sql = "SELECT b.*, m.title as movie_title, m.poster, s.show_date, s.show_time,
+$sql = "SELECT b.*, m.title as movie_title, m.poster, s.showtime,
         GROUP_CONCAT(bs.seat_number) as seats
         FROM bookings b
-        JOIN movies m ON b.movie_id = m.id
         JOIN showtimes s ON b.showtime_id = s.id
+        JOIN movies m ON s.movie_id = m.id
         JOIN booked_seats bs ON b.id = bs.booking_id
         WHERE b.id = ? AND b.user_id = ? AND b.status = 'pending'
         GROUP BY b.id";
@@ -48,6 +48,8 @@ if (!$booking) {
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="footer.css">
+
 </head>
 <body>
     <!-- Navigation -->
@@ -92,8 +94,8 @@ if (!$booking) {
                                 <h5><?php echo $booking['movie_title']; ?></h5>
                                 <p>
                                     <strong>Suất chiếu:</strong><br>
-                                    <?php echo date('d/m/Y', strtotime($booking['show_date'])); ?> - 
-                                    <?php echo date('H:i', strtotime($booking['show_time'])); ?>
+                                    <?php echo date('d/m/Y', strtotime($booking['showtime'])); ?> - 
+                                    <?php echo date('H:i', strtotime($booking['showtime'])); ?>
                                 </p>
                                 <p>
                                     <strong>Ghế:</strong><br>
@@ -101,7 +103,7 @@ if (!$booking) {
                                 </p>
                                 <p>
                                     <strong>Tổng tiền:</strong><br>
-                                    <?php echo number_format($booking['total_price'], 0, ',', '.'); ?> VNĐ
+                                    <?php echo number_format($booking['total_amount'], 0, ',', '.'); ?> VNĐ
                                 </p>
                             </div>
                         </div>
@@ -115,7 +117,7 @@ if (!$booking) {
                     <div class="card-body">
                         <form method="POST" action="process_payment.php">
                             <input type="hidden" name="booking_id" value="<?php echo $booking_id; ?>">
-                            <input type="hidden" name="total_amount" value="<?php echo $booking['total_price']; ?>">
+                            <input type="hidden" name="total_amount" value="<?php echo $booking['total_amount']; ?>">
                             
                             <div class="mb-4">
                                 <div class="form-check mb-3">
@@ -128,7 +130,7 @@ if (!$booking) {
                                 <div class="form-check mb-3">
                                     <input class="form-check-input" type="radio" name="payment_method" id="zalopay" value="zalopay">
                                     <label class="form-check-label" for="zalopay">
-                                        <img src="https://upload.wikimedia.org/wikipedia/vi/thumb/7/7c/ZaloPay_logo.svg/1200px-ZaloPay_logo.svg.png" alt="ZaloPay" height="30">
+                                        <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-ZaloPay-Square.png" alt="ZaloPay" height="30">
                                         ZaloPay
                                     </label>
                                 </div>
@@ -142,7 +144,7 @@ if (!$booking) {
 
                             <div class="d-grid">
                                 <button type="submit" class="btn btn-primary btn-lg">
-                                    Thanh toán <?php echo number_format($booking['total_price'], 0, ',', '.'); ?> VNĐ
+                                    Thanh toán <?php echo number_format($booking['total_amount'], 0, ',', '.'); ?> VNĐ
                                 </button>
                             </div>
                         </form>
@@ -181,29 +183,7 @@ if (!$booking) {
     </div>
 
     <!-- Footer -->
-    <footer class="bg-dark text-light py-4">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <h5>CGV Cinemas</h5>
-                    <p>Hệ thống rạp chiếu phim hiện đại nhất Việt Nam</p>
-                </div>
-                <div class="col-md-4">
-                    <h5>Liên kết</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#" class="text-light">Về chúng tôi</a></li>
-                        <li><a href="#" class="text-light">Điều khoản sử dụng</a></li>
-                        <li><a href="#" class="text-light">Chính sách bảo mật</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-4">
-                    <h5>Liên hệ</h5>
-                    <p>Email: contact@cgv.vn</p>
-                    <p>Hotline: 1900 6017</p>
-                </div>
-            </div>
-        </div>
-    </footer>
+    <?php include 'footer.php'?>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

@@ -219,7 +219,7 @@ if (isset($showtimes_by_date_theater[$selected_date][$selected_theater_id]['time
                     <p><?php echo date('d F Y', strtotime($selected_date)); ?></p>
                     <p><?php echo htmlspecialchars($selected_showtime_time); ?></p>
                     <p class="mt-3">*Seat selection can be done after this</p>
-                    <a href="#" id="proceed-link" class="btn proceed-btn mt-3 <?php echo $selected_showtime_id ? '' : 'disabled'; ?>" <?php echo $selected_showtime_id ? 'data-showtime-id="' . $selected_showtime_id . '"' : ''; ?>>Proceed</a>
+                    <a href="select_seats.php?showtime_id=<?php echo $selected_showtime_id?>" id="proceed-link" class="btn proceed-btn mt-3 <?php echo $selected_showtime_id ? '' : 'disabled'; ?>" <?php echo $selected_showtime_id ? 'data-showtime-id="' . $selected_showtime_id . '"' : ''; ?>>Proceed</a>
                 </div>
             </div>
         </div>
