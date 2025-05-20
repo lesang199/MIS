@@ -167,7 +167,7 @@ $showtimes_result = $showtimes_stmt->get_result();
                                     <th>Phòng chiếu</th>
                                     <th>Thời gian</th>
                                     <th>Giá vé</th>
-                                    <th>Thao tác</th>
+                                    <!-- <th>Thao tác</th> -->
                                 </tr>
                             </thead>
                             <tbody>
@@ -176,13 +176,13 @@ $showtimes_result = $showtimes_stmt->get_result();
                                         <td><?php echo $showtime['room_name']; ?></td>
                                         <td><?php echo date('d/m/Y H:i', strtotime($showtime['showtime'])); ?></td>
                                         <td><?php echo number_format($showtime['price'], 0, ',', '.'); ?> VNĐ</td>
-                                        <td>
+                                        <!-- <td>
                                             <?php if(isset($_SESSION['user_id'])): ?>
-                                                <a href="book_ticket.php?showtime_id=<?php echo $showtime['id']; ?>" class="btn btn-warning btn-sm">Đặt vé</a>
+                                                <a href="book_ticket.php?id=<?php echo $showtime['id']; ?>" class="btn btn-warning btn-sm">Đặt vé</a>
                                             <?php else: ?>
                                                 <a href="login.php" class="btn btn-warning btn-sm">Đăng nhập để đặt vé</a>
                                             <?php endif; ?>
-                                        </td>
+                                        </td> -->
                                     </tr>
                                 <?php endwhile; ?>
                             </tbody>
@@ -198,29 +198,7 @@ $showtimes_result = $showtimes_stmt->get_result();
     </div>
 
     <!-- Footer -->
-    <footer class="bg-dark text-light py-4 mt-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <h5>CGV Cinemas</h5>
-                    <p>Hệ thống rạp chiếu phim hiện đại nhất Việt Nam</p>
-                </div>
-                <div class="col-md-4">
-                    <h5>Liên kết</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#" class="text-light">Về chúng tôi</a></li>
-                        <li><a href="#" class="text-light">Điều khoản sử dụng</a></li>
-                        <li><a href="#" class="text-light">Chính sách bảo mật</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-4">
-                    <h5>Liên hệ</h5>
-                    <p>Email: contact@cgv.vn</p>
-                    <p>Hotline: 1900 6017</p>
-                </div>
-            </div>
-        </div>
-    </footer>
+   <?php include 'footer.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
