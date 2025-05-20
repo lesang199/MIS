@@ -126,45 +126,7 @@ $result = $conn->query($sql);
     <?php include 'footer.php'?>
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        <script>
-  const imgAll = document.querySelectorAll(".carousel-list .caurousel-item");
-  const list = document.querySelector(".carousel-list");
-  const iconLeft = document.querySelector(".arrow-icon-left");
-  const iconRight = document.querySelector(".arrow-icon-right");
-  const imgLength = imgAll.length;
-  let currentIdx = 0;
-
-  function updateTransform() {
-    const width = imgAll[0].offsetWidth;
-    list.style.transform = `translateX(${-width * currentIdx}px)`;
-    list.style.transition = '0.5s ease';
-  }
-
-  function slideShow() {
-    currentIdx = (currentIdx + 1) % imgLength;
-    updateTransform();
-  }
-
-  let interval = setInterval(slideShow,3000);
-
-  iconLeft.addEventListener("click", () => {
-    clearInterval(interval);
-    currentIdx = (currentIdx === 0) ? imgLength - 1 : currentIdx - 1;
-    updateTransform();
-    interval = setInterval(slideShow, 3000);
-  });
-
-  iconRight.addEventListener("click", () => {
-    clearInterval(interval);
-    currentIdx = (currentIdx === imgLength - 1) ? 0 : currentIdx + 1;
-    updateTransform();
-    interval = setInterval(slideShow, 3000);
-  });
-
-  // Resize support
-  window.addEventListener('resize', updateTransform);
-</script>
-   
+       
 </body>
 </html>
 

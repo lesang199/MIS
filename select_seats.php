@@ -261,6 +261,14 @@ $alphabet = range('A', 'Z');
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<?php
+
+$seat_book=isset($_GET['seats']) ? explode(',', $_GET['seats']) : [];
+echo '<script>';
+echo 'const bookedSeats = ' . json_encode($booked_seats) . ';';
+echo 'const preSelectedSeats = ' . json_encode($seat_book) . ';';
+echo '</script>';
+?>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const seats = document.querySelectorAll('.seat:not(.booked)');
@@ -269,6 +277,16 @@ $alphabet = range('A', 'Z');
         const proceedButton = document.getElementById('proceed-to-payment');
         const seatPrice = <?php echo $showtime ? $showtime['price'] : 0; ?>;
         const selectedSeats = new Set();
+
+        // Đánh dấu các ghế đã chọn từ URL (preSelectedSeats)
+        preSelectedSeats.forEach(function(seatNumber) {
+            const seatElem = document.querySelector('.seat[data-seat-number="' + seatNumber + '"]:not(.booked)');
+            if (seatElem) {
+                seatElem.classList.add('selected');
+                selectedSeats.add(seatNumber);
+            }
+        });
+        updateSummary();
 
         seats.forEach(seat => {
             seat.addEventListener('click', function() {
@@ -291,33 +309,18 @@ $alphabet = range('A', 'Z');
 
             if (selectedSeats.size > 0) {
                 proceedButton.disabled = false;
-                 // Set the link for the next step (e.g., payment)
-                // You will need to create a payment/confirmation page (e.g., checkout.php)
-                // and pass the selected seats and showtime_id to it.
-                // Example:
-                // proceedButton.onclick = function() { 
-                //     const seatsArray = Array.from(selectedSeats);
-                //     window.location.href = 'checkout.php?showtime_id=<?php echo $showtime_id; ?>&seats=' + seatsArray.join(',');
-                // };
-
-                 // For now, just enable the button
-                 proceedButton.disabled = false;
             } else {
                 proceedButton.disabled = true;
-                 // Reset the onclick if it was set
-                 // proceedButton.onclick = null;
             }
         }
          
         // Add event listener for the proceed button (handle the next step)
-         proceedButton.addEventListener('click', function() {
-             if (selectedSeats.size > 0) {
-                 const seatsArray = Array.from(selectedSeats);
-                 // Redirect to the next page, passing selected seats and showtime ID
-                 window.location.href = 'checkout.php?showtime_id=<?php echo $showtime_id; ?>&seats=' + seatsArray.join(',');
-             }
-         });
-
+        proceedButton.addEventListener('click', function() {
+            if (selectedSeats.size > 0) {
+                const seatsArray = Array.from(selectedSeats);
+                window.location.href = 'checkout.php?showtime_id=<?php echo $showtime_id; ?>&seats=' + seatsArray.join(',');
+            }
+        });
     });
 </script>
 
